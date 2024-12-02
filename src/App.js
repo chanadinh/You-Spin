@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from 'axios';
 import "./App.css";
 
 const App = () => {
@@ -10,12 +9,14 @@ const App = () => {
   const photoRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [processedImage, setProcessedImage] = useState(null);
+  const [stream, setStream] = useState(null); // Store the webcam stream
 
   useEffect(() => {
     const startWebcam = async () => {
       if (navigator.mediaDevices) {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         videoRef.current.srcObject = stream;
+        setStream(stream); // Save the stream
       }
     };
     startWebcam();
@@ -27,6 +28,12 @@ const App = () => {
     takePhoto();
     setCapturing(false);
     setLoading(true);
+
+    // Stop the webcam after taking the photo
+    if (stream) {
+      let tracks = stream.getTracks();
+      tracks.forEach(track => track.stop());
+    }
   };
 
   const takePhoto = async () => {
@@ -62,7 +69,7 @@ const App = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#28a745' }}>
-      <h1>Spinning Image</h1>
+      <h1>I make u spin</h1>
 
       <button 
           onClick={captureFace} 
@@ -91,10 +98,10 @@ const App = () => {
 
       <div className="container" style={{ marginTop: '20px' }}>
         <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
-        <div className={'result' + (hasPhoto? 'hasPhoto':'')} >
+        <div className={'result' + (hasPhoto ? ' hasPhoto' : '')}>
           {processedImage && (
             <div>
-              <h2>You Spin 🐸</h2>
+              <h2 style={{ marginBottom: '20px' }}>You Spin 🐸</h2> {/* Adjusted margin */}
               <img src={processedImage} alt="Processed" 
                 className="spinning-image"
                 style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
