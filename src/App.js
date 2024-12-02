@@ -60,8 +60,8 @@ const App = () => {
   }
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#fff' }}> {/* Changed background color */}
-      <h1 style={{ fontFamily: 'Comic Sans MS', color: '#333' }}>Spinning Image</h1> {/* Fun font for the title */}
+    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#fff' }}>
+      <h1 style={{ fontFamily: 'Comic Sans MS', color: '#333' }}>i make u spin</h1>
 
       <button 
           onClick={captureFace} 
@@ -95,12 +95,12 @@ const App = () => {
           {processedImage && (
             <div>
               <h2 style={{ 
-                marginBottom: '20px', 
+                marginBottom: '40px',  // Increased margin to move it lower
                 fontFamily: 'Comic Sans MS', 
-                color: '#ff4081', /* Fun color */
+                color: '#ff4081',
                 fontSize: '36px', 
                 textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)',
-                animation: 'bounce 1s ease infinite' /* Added animation */
+                animation: 'bounce 1s ease infinite'
               }}>
                 You Spin 🐸
               </h2>
