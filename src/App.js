@@ -9,14 +9,12 @@ const App = () => {
   const photoRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [processedImage, setProcessedImage] = useState(null);
-  const [stream, setStream] = useState(null); // Store the webcam stream
 
   useEffect(() => {
     const startWebcam = async () => {
       if (navigator.mediaDevices) {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         videoRef.current.srcObject = stream;
-        setStream(stream); // Save the stream
       }
     };
     startWebcam();
@@ -28,12 +26,6 @@ const App = () => {
     takePhoto();
     setCapturing(false);
     setLoading(true);
-
-    // Stop the webcam after taking the photo
-    if (stream) {
-      let tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
-    }
   };
 
   const takePhoto = async () => {
@@ -68,8 +60,8 @@ const App = () => {
   }
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#28a745' }}>
-      <h1>I make u spin</h1>
+    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#fff' }}> {/* Changed background color */}
+      <h1 style={{ fontFamily: 'Comic Sans MS', color: '#333' }}>Spinning Image</h1> {/* Fun font for the title */}
 
       <button 
           onClick={captureFace} 
@@ -84,7 +76,8 @@ const App = () => {
             textShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a', 
             boxShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a',
             cursor: 'pointer',
-            transition: '0.3s ease'
+            transition: '0.3s ease',
+            fontFamily: 'Arial, sans-serif'
           }}
           onMouseEnter={(e) => {
             e.target.style.boxShadow = '0 0 10px #0aff0a, 0 0 20px #0aff0a, 0 0 30px #0aff0a';
@@ -97,11 +90,20 @@ const App = () => {
       </button>
 
       <div className="container" style={{ marginTop: '20px' }}>
-        <video ref={videoRef}> </video>
+        <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
         <div className={'result' + (hasPhoto ? ' hasPhoto' : '')}>
           {processedImage && (
             <div>
-              <h2 style={{ marginBottom: '20px' }}>You Spin 🐸</h2> {/* Adjusted margin */}
+              <h2 style={{ 
+                marginBottom: '20px', 
+                fontFamily: 'Comic Sans MS', 
+                color: '#ff4081', /* Fun color */
+                fontSize: '36px', 
+                textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)',
+                animation: 'bounce 1s ease infinite' /* Added animation */
+              }}>
+                You Spin 🐸
+              </h2>
               <img src={processedImage} alt="Processed" 
                 className="spinning-image"
                 style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
