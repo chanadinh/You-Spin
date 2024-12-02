@@ -43,7 +43,7 @@ const App = () => {
   setHasPhoto(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/process-image", {
+      const response = await fetch("https://3h8mnwen69.execute-api.us-east-1.amazonaws.com/2", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,22 +67,39 @@ const App = () => {
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h1>Spinning Image</h1>
-      {/* Button to capture the image */}
-      {/* <button onClick={captureFace} disabled={loading}> */}
-      <button onClick={captureFace}>
-        {/* {loading ? 'Capturing...' : 'Capture Face'} */}
-        {'Capture Face'}
-      </button>
+
+      <button 
+          onClick={captureFace} 
+          style={{
+            backgroundColor: '#0f0f0f', 
+            color: '#fff', 
+            padding: '10px 20px', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            border: '2px solid #0aff0a', 
+            borderRadius: '5px', 
+            textShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a', 
+            boxShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a',
+            cursor: 'pointer',
+            transition: '0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = '0 0 10px #0aff0a, 0 0 20px #0aff0a, 0 0 30px #0aff0a';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a';
+          }}
+        >
+          {'Try me'}
+  </button>
      
-      {/* Display the image with spinning animation */}
-      {/* {imageUrl && ( */}
-        {/* <div className = {'result' + (imageUrl ? 'hasPhoto' : '')}> */}
+      
         <div className="container" style={{ marginTop: '20px' }}>
         <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
         <div className={'result' + (hasPhoto? 'hasPhoto':'')} >
         {processedImage && (
         <div>
-          <h2>Processed Image:</h2>
+          <h2>You Spin 🐸</h2>
           <img src={processedImage} alt="Processed" 
           className="spinning-image"
           style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
