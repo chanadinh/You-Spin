@@ -97,7 +97,7 @@ const App = () => {
       </button>
 
       <div className="container" style={{ marginTop: '20px' }}>
-        <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
+        <video ref={videoRef}> </video>
         <div className={'result' + (hasPhoto ? ' hasPhoto' : '')}>
           {processedImage && (
             <div>
