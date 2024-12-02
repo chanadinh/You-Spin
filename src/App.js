@@ -27,20 +27,18 @@ const App = () => {
     takePhoto();
     setCapturing(false);
     setLoading(true);
-
   };
 
- const takePhoto = async () => {
-    
-  const width = 414;
-  const height = width / (16/9);
-  let video = videoRef.current;
-  let photo = photoRef.current;
-  photo.width = width;
-  photo.height = height;
-  let context = photo.getContext('2d');
-  context.drawImage(video, 0, 0, width, height); 
-  setHasPhoto(true);
+  const takePhoto = async () => {
+    const width = 414;
+    const height = width / (16/9);
+    let video = videoRef.current;
+    let photo = photoRef.current;
+    photo.width = width;
+    photo.height = height;
+    let context = photo.getContext('2d');
+    context.drawImage(video, 0, 0, width, height); 
+    setHasPhoto(true);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/process-image", {
@@ -60,12 +58,10 @@ const App = () => {
     } catch (error) {
       console.error("Error:", error);
     }
- }
-
-
+  }
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
+    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#28a745' }}>
       <h1>Spinning Image</h1>
 
       <button 
@@ -89,29 +85,27 @@ const App = () => {
           onMouseLeave={(e) => {
             e.target.style.boxShadow = '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a';
           }}
-        >
-          {'Try me'}
-  </button>
-     
-      
-        <div className="container" style={{ marginTop: '20px' }}>
+      >
+        {'Try me'}
+      </button>
+
+      <div className="container" style={{ marginTop: '20px' }}>
         <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
         <div className={'result' + (hasPhoto? 'hasPhoto':'')} >
-        {processedImage && (
-        <div>
-          <h2>You Spin 🐸</h2>
-          <img src={processedImage} alt="Processed" 
-          className="spinning-image"
-          style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
-          />
+          {processedImage && (
+            <div>
+              <h2>You Spin 🐸</h2>
+              <img src={processedImage} alt="Processed" 
+                className="spinning-image"
+                style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
+              />
+            </div>
+          )}
+          <canvas ref={photoRef}></canvas>
         </div>
-      )}
-        <canvas ref={photoRef} ></canvas>
-        </div>
-        </div>
+      </div>
     </div>
   );
 };
 
 export default App;
-
