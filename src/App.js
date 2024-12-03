@@ -20,7 +20,6 @@ const App = () => {
     startWebcam();
   }, []);
   
-  // Function to capture face and get the processed image from the backend
   const captureFace = async () => {
     setCapturing(true);
     takePhoto();
@@ -90,24 +89,14 @@ const App = () => {
       </button>
 
       <div className="container" style={{ marginTop: '20px' }}>
-        <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block' }}></video>
+        <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block', width: '100%', height: 'auto' }}></video>
         <div className={'result' + (hasPhoto ? ' hasPhoto' : '')}>
           {processedImage && (
             <div>
-              <h2 style={{ 
-                marginBottom: '40px',  // Increased margin to move it lower
-                fontFamily: 'Comic Sans MS', 
-                color: '#ff4081',
-                fontSize: '36px', 
-                textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)',
-                animation: 'bounce 1s ease infinite'
-              }}>
+              <h2 style={{ marginBottom: '40px', fontFamily: 'Comic Sans MS', color: '#ff4081', fontSize: '36px', textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)', animation: 'bounce 1s ease infinite' }}>
                 You Spin 🐸
               </h2>
-              <img src={processedImage} alt="Processed" 
-                className="spinning-image"
-                style={{ width: '300px', height: '300px', animation: 'spin 1s linear infinite' }}
-              />
+              <img src={processedImage} alt="Processed" className="spinning-image" style={{ width: '100%', maxWidth: '300px', height: 'auto', maxHeight: '300px', animation: 'spin 1s linear infinite' }} />
             </div>
           )}
           <canvas ref={photoRef}></canvas>
