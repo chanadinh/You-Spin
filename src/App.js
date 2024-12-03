@@ -40,7 +40,7 @@ const App = () => {
     setHasPhoto(true);
 
     try {
-      const response = await fetch("https://youspinbe-1d979ccb92d9.herokuapp.com/", {
+      const response = await fetch("https://original-nomad-443602-g2-820509380648.us-central1.run.app/process-image", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
