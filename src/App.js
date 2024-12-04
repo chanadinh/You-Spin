@@ -82,7 +82,7 @@ const App = () => {
 
         {hasPhoto && !processedImage && (
           <p style={{ color: "blue", fontWeight: "bold", marginBottom: "20px" }}>
-            where is ur fk face?
+            where is ur face? im tryna get it...
           </p>
         )}
 
