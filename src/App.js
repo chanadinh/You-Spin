@@ -1,106 +1,125 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 
 const App = () => {
-  const [imageUrl, setImageUrl] = useState('');
-  const [loading, setLoading] = useState(false);
-  const videoRef = useRef(null);
-  const [capturing, setCapturing] = useState(false);
-  const photoRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [processedImage, setProcessedImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+  const photoRef = useRef(null);
 
-  useEffect(() => {
-    const startWebcam = async () => {
-      if (navigator.mediaDevices) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoRef.current.srcObject = stream;
-      }
-    };
-    startWebcam();
-  }, []);
-  
-  const captureFace = async () => {
-    setCapturing(true);
-    takePhoto();
-    setCapturing(false);
-    setLoading(true);
+  const handleFileUpload = async (file) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const imageBase64 = e.target.result;
+        setHasPhoto(true);
+        setErrorMessage(""); // Clear previous error messages
+
+        try {
+          const response = await fetch("http://192.168.1.215:5000/process-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image: imageBase64 }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setProcessedImage(`data:image/png;base64,${data.processed_image}`);
+          } else {
+            setErrorMessage("eeee i cant spin u. try again.");
+          }
+        } catch (error) {
+          setErrorMessage("eeee i cant spin u. try again.");
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
-  const takePhoto = async () => {
-    const width = 414;
-    const height = width / (16/9);
-    let video = videoRef.current;
-    let photo = photoRef.current;
-    photo.width = width;
-    photo.height = height;
-    let context = photo.getContext('2d');
-    context.drawImage(video, 0, 0, width, height); 
-    setHasPhoto(true);
-
-    try {
-      const response = await fetch("https://original-nomad-443602-g2-820509380648.us-central1.run.app/process-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ image: photo.toDataURL() }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProcessedImage(`data:image/png;base64,${data.processed_image}`);
-      } else {
-        console.error("Error processing image.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  }
+  const handleButtonClick = () => {
+    document.getElementById("fileInput").click();
+  };
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#fff' }}>
-      <h1 style={{ fontFamily: 'Comic Sans MS', color: '#333' }}>i make u spin</h1>
-
-      <button 
-          onClick={captureFace} 
-          style={{
-            backgroundColor: '#0f0f0f', 
-            color: '#fff', 
-            padding: '10px 20px', 
-            fontSize: '16px', 
-            fontWeight: 'bold', 
-            border: '2px solid #0aff0a', 
-            borderRadius: '5px', 
-            textShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a', 
-            boxShadow: '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a',
-            cursor: 'pointer',
-            transition: '0.3s ease',
-            fontFamily: 'Arial, sans-serif'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.boxShadow = '0 0 10px #0aff0a, 0 0 20px #0aff0a, 0 0 30px #0aff0a';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.boxShadow = '0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a';
-          }}
+    <div style={{ textAlign: "center", padding: "100px", backgroundColor: "#FDFD96" }}>
+      <h1 style={{ fontFamily: "Comic Sans MS", color: "#333" }}>i make u spin</h1>
+      
+      <button
+        onClick={handleButtonClick}
+        style={{
+          backgroundColor: "#0f0f0f",
+          color: "#fff",
+          padding: "10px 20px",
+          fontSize: "16px",
+          fontWeight: "bold",
+          border: "2px solid #0aff0a",
+          borderRadius: "5px",
+          textShadow: "0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a",
+          boxShadow: "0 0 5px #0aff0a, 0 0 10px #0aff0a, 0 0 20px #0aff0a",
+          cursor: "pointer",
+          transition: "0.3s ease",
+          fontFamily: "Arial, sans-serif",
+        }}
       >
-        {'Try me'}
+        gimme ur selfie
       </button>
 
-      <div className="container" style={{ marginTop: '20px' }}>
-        <video ref={videoRef} autoPlay style={{ display: capturing ? 'none' : 'block', width: '100%', height: 'auto' }}></video>
-        <div className={'result' + (hasPhoto ? ' hasPhoto' : '')}>
-          {processedImage && (
-            <div>
-              <h2 style={{ marginBottom: '40px', fontFamily: 'Comic Sans MS', color: '#ff4081', fontSize: '36px', textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)', animation: 'bounce 1s ease infinite' }}>
-                You Spin 🐸
-              </h2>
-              <img src={processedImage} alt="Processed" className="spinning-image" style={{ width: '100%', maxWidth: '300px', height: 'auto', maxHeight: '300px', animation: 'spin 1s linear infinite' }} />
-            </div>
-          )}
-          <canvas ref={photoRef}></canvas>
-        </div>
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={(e) => handleFileUpload(e.target.files[0])}
+      />
+
+      <div className="container" style={{ marginTop: "20px" }}>
+        {errorMessage && (
+          <p style={{ color: "red", fontWeight: "bold", marginBottom: "20px" }}>{errorMessage}</p>
+        )}
+
+        {hasPhoto && !processedImage && (
+          <p style={{ color: "blue", fontWeight: "bold", marginBottom: "20px" }}>
+            where is ur fk face?
+          </p>
+        )}
+
+        {processedImage && (
+          <div>
+            <h2
+              style={{
+                marginBottom: "40px",
+                fontFamily: "Comic Sans MS",
+                color: "#ff4081",
+                fontSize: "36px",
+                textShadow: "2px 2px 10px rgba(0, 0, 0, 0.5)",
+                animation: "bounce 1s ease infinite",
+              }}
+            >
+              You Spin 🐸
+            </h2>
+            <img
+              src={processedImage}
+              alt="Processed"
+              className="spinning-image"
+              style={{
+                width: "100%",
+                maxWidth: "300px",
+                height: "auto",
+                maxHeight: "300px",
+                animation: "spin 1s linear infinite",
+              }}
+            />
+            <audio
+              id="spinAudio"
+              src="https://media.memesoundeffects.com/2024/11/Donald-Trump-Macarena.mp3"
+              autoPlay
+              loop
+            ></audio>
+          </div>
+        )}
       </div>
     </div>
   );
