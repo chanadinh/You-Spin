@@ -16,7 +16,7 @@ const App = () => {
         setErrorMessage(""); // Clear previous error messages
 
         try {
-          const response = await fetch("http://192.168.1.215:5000/process-image", {
+          const response = await fetch("https://original-nomad-443602-g2-820509380648.us-central1.run.app/process-image", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
